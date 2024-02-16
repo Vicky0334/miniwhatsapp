@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * {
+      margin: 0%;
+      padding: 0%;
+      box-sizing: border-box;
+    }
+
+    /* 
+    
+    1rem= 16px
+    */
+
+    html,
+    body {
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div id="main" class="h-full w-full flex">
+    <div class="left p-2 bg-stone-500 text-white">
+      <div class="top">
+        <div class="user flex gap-[1rem] items-center">
+          <img class="h-[2.5rem] w-[2.5rem] object-cover rounded-full" src="<%= loggedInUser.profileImage %>" alt="">
+          <h2><%= loggedInUser.username %></h2>
+        </div>
+      </div>
+      <div class="bottom pt-4">
+        <h4>Chats</h4>
+        <div class="chats">
+          <div class="chat">
+            <div class="user flex gap-[1rem] items-center">
+              <img class="h-[2rem] w-[2rem] object-cover rounded-full" src="https://images.pexels.com/photos/20142199/pexels-photo-20142199/free-photo-of-braune-stockente.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="">
+              <h3>username</h3>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="right"></div>
+  </div>
+
+
+
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var socket = io();
+  </script>
+</body>
+
+</html>

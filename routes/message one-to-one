@@ -1,0 +1,52 @@
+message one-to-one    (user message)
+private message (user message)
+message save (message)
+
+Schema
+    user
+    message
+
+userSchema:
+    username
+    password
+    email 
+    profileImage
+    socketId : String
+
+message:
+    sender:String(username)
+    receiver:String(username)
+    data:String(message)
+
+
+
+
+
+a                                  b
+hello bhai kese ho
+                                badhiya hun
+
+
+
+
+hello bhai kese ho
+{
+    sender:a,
+    receiver:b,
+    data:"hello bhai kese ho",
+}
+
+
+badhiya hun
+{
+    sender:b,
+    receiver:a,
+    data:"badhiya hun"
+}
+
+
+Requirements 
+Modles
+properties
+
+
