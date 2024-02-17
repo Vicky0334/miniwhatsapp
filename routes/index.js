@@ -25,7 +25,7 @@ router.post('/register', (req, res, next) => {
     .then((result) => {
       passport.authenticate('local')(req, res, () => {
         //destination after user register
-        res.send(result)
+        res.redirect('/home')
       });
     })
     .catch((err) => {
@@ -72,6 +72,21 @@ router.get('/home', isloggedIn, async (req, res, next) => {
   res.render('home', {
     loggedInUser
   })
+})
+
+router.post('/searchUser', isloggedIn, async (req, res, next) => {
+  const data = req.body.data
+
+  const allUsers = await userModel.find({
+    username: {
+      $regex: data,
+      $options: 'i'
+    }
+  })
+
+ 
+  res.status(200).json(allUsers)
+
 })
 
 

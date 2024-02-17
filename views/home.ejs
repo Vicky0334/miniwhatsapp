@@ -23,6 +23,35 @@
       height: 100%;
       width: 100%;
     }
+
+    .searchSection {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      transform: translate(-50%, -50%);
+      top: 50%;
+      left: 50%;
+      background-color: #72727231;
+    }
+
+    .searchSection .center {
+      height: 70vh;
+      width: 60vw;
+      background-color: #fff;
+      border-radius: 0.5rem;
+    }
+
+    .center input {
+      width: 100%;
+      background-color: #efefef;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid rgb(125, 125, 125);
+      outline: none;
+      border-radius: 0.5rem;
+    }
   </style>
 
 </head>
@@ -51,14 +80,27 @@
       </div>
     </div>
     <div class="right"></div>
+
+    <div class="searchSection">
+      <div class="center">
+        <input id="searchUserInput" type="text" placeholder="Search username">
+        <div class="users"></div>
+      </div>
+    </div>
+
   </div>
 
 
-
-
   <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js" integrity="sha512-NQfB/bDaB8kaSXF8E77JjhHG5PM6XVRxvHzkZiwl3ddWCEPBa23T76MuWSwAJdMGJnmQqM0VeY9kFszsrBEFrQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script>
     var socket = io();
+
+    document.querySelector('#searchUserInput').addEventListener('input', async (event) => {
+      const response = await axios.post('/searchUser', {
+        data: document.querySelector("#searchUserInput").value
+      })
+    })
   </script>
 </body>
 
