@@ -52,6 +52,26 @@
       outline: none;
       border-radius: 0.5rem;
     }
+
+    .center .users {
+      display: flex;
+      flex-direction: column;
+      padding: 0.5rem;
+
+    }
+
+    .center .users .user {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+    }
+
+    .center .users .user img {
+      height: 2.5rem;
+      width: 2.5rem;
+      border-radius: 50%;
+    }
   </style>
 
 </head>
@@ -69,12 +89,7 @@
       <div class="bottom pt-4">
         <h4>Chats</h4>
         <div class="chats">
-          <div class="chat">
-            <div class="user flex gap-[1rem] items-center">
-              <img class="h-[2rem] w-[2rem] object-cover rounded-full" src="https://images.pexels.com/photos/20142199/pexels-photo-20142199/free-photo-of-braune-stockente.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="">
-              <h3>username</h3>
-            </div>
-          </div>
+
         </div>
 
       </div>
@@ -84,7 +99,9 @@
     <div class="searchSection">
       <div class="center">
         <input id="searchUserInput" type="text" placeholder="Search username">
-        <div class="users"></div>
+        <div class="users">
+
+        </div>
       </div>
     </div>
 
@@ -97,10 +114,54 @@
     var socket = io();
 
     document.querySelector('#searchUserInput').addEventListener('input', async (event) => {
+      const data = document.querySelector("#searchUserInput").value
+
+      if (data == "") {
+        return
+      }
+
+
       const response = await axios.post('/searchUser', {
-        data: document.querySelector("#searchUserInput").value
+        data: data
       })
+
+
+      document.querySelector('.center .users').innerHTML = ""
+      response.data.forEach(searchUser => {
+        appendSearchUser(searchUser.profileImage, searchUser.username, searchUser._id)
+      });
+
     })
+
+
+    function appendSearchUser(profileImage, username, id) {
+      const template = `
+      <div onclick="addFriend(event,'${id}','${profileImage}','${username}')" class="user" id="${id}" >
+            <img src="${profileImage}" alt="">
+            <h3> ${username} </h3>
+          </div>`
+      document.querySelector('.center .users').innerHTML += template
+    }
+
+    function appendChat(profileImage, username, id) {
+      const template = `<div class="chat" id="${id}" >
+            <div class="user flex gap-[1rem] items-center">
+              <img class="h-[2rem] w-[2rem] object-cover rounded-full" src="${profileImage}" alt="">
+              <h3>${username}</h3>
+            </div>
+          </div>`
+      document.querySelector('.chats').innerHTML += template
+    }
+
+    async function addFriend(event, id, profileImage, username) {
+      const response = await axios.post('/addFriend', {
+        friendId: id
+      })
+
+      appendChat(profileImage, username, id)
+
+      console.log(response)
+    }
   </script>
 </body>
 
