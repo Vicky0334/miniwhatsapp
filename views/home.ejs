@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     * {
@@ -35,6 +36,7 @@
       top: 50%;
       left: 50%;
       background-color: #72727231;
+      display: none;
     }
 
     .searchSection .center {
@@ -72,6 +74,15 @@
       width: 2.5rem;
       border-radius: 50%;
     }
+
+    #main .left {
+      min-width: 13rem;
+    }
+
+    #main .left .top {
+      display: flex;
+      justify-content: space-between;
+    }
   </style>
 
 </head>
@@ -85,11 +96,21 @@
           <img class="h-[2.5rem] w-[2.5rem] object-cover rounded-full" src="<%= loggedInUser.profileImage %>" alt="">
           <h2><%= loggedInUser.username %></h2>
         </div>
+        <button onclick="openSearch()">
+          <i class="ri-user-add-fill"></i>
+        </button>
       </div>
       <div class="bottom pt-4">
         <h4>Chats</h4>
         <div class="chats">
-
+          <% loggedInUser.friends.forEach(friend=>{ %>
+          <div class="chat" id="shery_<%= friend._id %>">
+            <div class="user flex gap-[1rem] items-center">
+              <img class="h-[2rem] w-[2rem] object-cover rounded-full" src="<%= friend.profileImage %>" alt="">
+              <h3><%= friend.username %></h3>
+            </div>
+          </div>
+          <% }) %>
         </div>
 
       </div>
@@ -144,7 +165,11 @@
     }
 
     function appendChat(profileImage, username, id) {
-      const template = `<div class="chat" id="${id}" >
+
+      if (document.querySelector(`.chats #shery_${id}`)) {
+        return
+      }
+      const template = `<div class="chat" id="shery_${id}" >
             <div class="user flex gap-[1rem] items-center">
               <img class="h-[2rem] w-[2rem] object-cover rounded-full" src="${profileImage}" alt="">
               <h3>${username}</h3>
@@ -154,13 +179,26 @@
     }
 
     async function addFriend(event, id, profileImage, username) {
-      const response = await axios.post('/addFriend', {
-        friendId: id
-      })
+      try {
+        const response = await axios.post('/addFriend', {
+          friendId: id
+        })
+
+        console.log("this is working")
+
+      } catch (err) {
+        console.log("this is error")
+      }
 
       appendChat(profileImage, username, id)
 
-      console.log(response)
+      document.querySelector('.searchSection').style.display = "none"
+
+      // console.log(response)
+    }
+
+    function openSearch() {
+      document.querySelector('.searchSection').style.display = "flex"
     }
   </script>
 </body>

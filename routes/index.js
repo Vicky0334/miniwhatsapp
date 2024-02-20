@@ -65,7 +65,11 @@ router.get('/logout', (req, res, next) => {
 });
 
 router.get('/home', isloggedIn, async (req, res, next) => {
-  const loggedInUser = req.user
+  const loggedInUser = await userModel.findOne({
+    username: req.user.username
+  }).populate('friends')
+
+  console.log(loggedInUser)
 
 
 
