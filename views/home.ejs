@@ -83,6 +83,71 @@
       display: flex;
       justify-content: space-between;
     }
+
+    .right {
+      width: 100%;
+      display: none;
+    }
+
+    .right .top {
+      width: 100%;
+      background-color: #78716c;
+      height: 3rem;
+      align-items: center;
+      display: flex;
+    }
+
+    .right .top .user {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: white;
+    }
+
+    .right .top .user img {
+      height: 2.5rem;
+      width: 2.5rem;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .right .conversationArea {
+      padding: 0.7rem;
+    }
+
+    .right .conversationArea .message {
+      padding: 0.5rem 0.75rem;
+      border-radius: 1rem;
+      background-color: #d1d1d1;
+      width: fit-content;
+    }
+
+    .right .conversationArea .outgoingMessage {
+      margin-left: auto;
+    }
+
+    .right .bottom {
+      width: 100%;
+      height: 3rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .right .bottom input {
+      width: 100%;
+      height: 100%;
+      padding: 0rem 0.75rem;
+      border: 2px solid rgba(0, 0, 0, 0.329);
+      border-radius: 0.75rem;
+    }
+
+    .right .bottom button {
+      padding: 0rem 0.75rem;
+    }
+
+    .right .conversationArea {
+      height: calc(100% - 6rem);
+    }
   </style>
 
 </head>
@@ -91,6 +156,8 @@
 
   <div id="main" class="h-full w-full flex">
     <div class="left p-2 bg-stone-500 text-white">
+
+
       <div class="top">
         <div class="user flex gap-[1rem] items-center">
           <img class="h-[2.5rem] w-[2.5rem] object-cover rounded-full" src="<%= loggedInUser.profileImage %>" alt="">
@@ -104,7 +171,7 @@
         <h4>Chats</h4>
         <div class="chats">
           <% loggedInUser.friends.forEach(friend=>{ %>
-          <div class="chat" id="shery_<%= friend._id %>">
+          <div onclick="openChat('<%= friend.profileImage %>','<%= friend.username %>','<%= friend._id %>')" class="chat" id="shery_<%= friend._id %>">
             <div class="user flex gap-[1rem] items-center">
               <img class="h-[2rem] w-[2rem] object-cover rounded-full" src="<%= friend.profileImage %>" alt="">
               <h3><%= friend.username %></h3>
@@ -115,7 +182,24 @@
 
       </div>
     </div>
-    <div class="right"></div>
+    <div class="right">
+
+      <div class="top">
+        <div class="user">
+          <img src="https://images.pexels.com/photos/11867612/pexels-photo-11867612.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="">
+          <h2>username</h2>
+        </div>
+      </div>
+      <div class="conversationArea">
+
+      </div>
+      <div class="bottom">
+        <input type="text" placeholder="Enter message" class="inputMessage">
+        <button onclick="sendMessage()" id="sendMessage"> send </button>
+      </div>
+
+
+    </div>
 
     <div class="searchSection">
       <div class="center">
@@ -126,6 +210,8 @@
       </div>
     </div>
 
+
+
   </div>
 
 
@@ -133,6 +219,14 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js" integrity="sha512-NQfB/bDaB8kaSXF8E77JjhHG5PM6XVRxvHzkZiwl3ddWCEPBa23T76MuWSwAJdMGJnmQqM0VeY9kFszsrBEFrQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script>
     var socket = io();
+    
+    const username = '<%= loggedInUser.username %>'
+
+    socket.emit('join-server', username)
+
+
+
+    let oppositeUser = null
 
     document.querySelector('#searchUserInput').addEventListener('input', async (event) => {
       const data = document.querySelector("#searchUserInput").value
@@ -199,6 +293,41 @@
 
     function openSearch() {
       document.querySelector('.searchSection').style.display = "flex"
+    }
+
+
+    function openChat(profileImage, username, id) {
+
+      document.querySelector('.right').style.display = "initial"
+
+      oppositeUser = username
+
+      document.querySelector('.right .top .user img').setAttribute('src', profileImage)
+      document.querySelector('.right .top .user h2').innerHTML = username
+
+    }
+
+    function appendOutgoingMessage(message) {
+      const template = `<div class="message outgoingMessage">
+          ${message}
+        </div>`
+      document.querySelector('.conversationArea').innerHTML += template
+    }
+
+    function sendMessage() {
+      const message = document.querySelector('.inputMessage').value
+      appendOutgoingMessage(message)
+      document.querySelector('.inputMessage').value = ""
+
+      const messageObject = {
+        message,
+        receiver: oppositeUser
+      }
+
+      console.log(messageObject)
+
+      socket.emit('send-private-message', messageObject)
+
     }
   </script>
 </body>
