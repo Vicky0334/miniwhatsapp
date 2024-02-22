@@ -156,8 +156,6 @@
 
   <div id="main" class="h-full w-full flex">
     <div class="left p-2 bg-stone-500 text-white">
-
-
       <div class="top">
         <div class="user flex gap-[1rem] items-center">
           <img class="h-[2.5rem] w-[2.5rem] object-cover rounded-full" src="<%= loggedInUser.profileImage %>" alt="">
@@ -219,7 +217,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.7/axios.min.js" integrity="sha512-NQfB/bDaB8kaSXF8E77JjhHG5PM6XVRxvHzkZiwl3ddWCEPBa23T76MuWSwAJdMGJnmQqM0VeY9kFszsrBEFrQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script>
     var socket = io();
-    
+
     const username = '<%= loggedInUser.username %>'
 
     socket.emit('join-server', username)
@@ -314,6 +312,13 @@
       document.querySelector('.conversationArea').innerHTML += template
     }
 
+    function appendIncomingMessage(message) {
+      const template = `<div class="message">
+          ${message}
+        </div>`
+      document.querySelector('.conversationArea').innerHTML += template
+    }
+
     function sendMessage() {
       const message = document.querySelector('.inputMessage').value
       appendOutgoingMessage(message)
@@ -329,6 +334,10 @@
       socket.emit('send-private-message', messageObject)
 
     }
+
+    socket.on('receive-private-message', messageObject => {
+      appendIncomingMessage(messageObject.message)
+    })
   </script>
 </body>
 

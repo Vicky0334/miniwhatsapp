@@ -6,10 +6,9 @@ const socketapi = {
 
 // Add your socket.io logic here!
 io.on("connection", function (socket) {
-    console.log("A user connected");
+
 
     socket.on('join-server', async username => {
-
         await userModel.findOneAndUpdate({
             username
         }, {
@@ -19,10 +18,16 @@ io.on("connection", function (socket) {
     })
 
 
-    socket.on('send-private-message', messageObject => {
+    socket.on('send-private-message', async messageObject => {
+        console.log(messageObject)
+        const receiver = await userModel.findOne({
+            username: messageObject.receiver
+        })
+
+        console.log(receiver)
 
 
-
+        socket.to(receiver.socketId).emit('receive-private-message', messageObject)
     })
 
 });
