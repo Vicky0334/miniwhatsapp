@@ -128,6 +128,29 @@ router.post('/addFriend', isloggedIn, async (req, res, next) => {
 })
 
 
+router.post('/getMessages', isloggedIn, async (req, res, next) => {
+
+  const chats = await messageModel.find({
+    $or: [
+      {
+        sender: "a",
+        receiver: "shubham"
+      },
+      {
+        sender: "shubham",
+        receiver: 'a'
+      }
+    ]
+  })
+
+  console.log(chats)
+
+  res.send('chats fetched')
+
+
+})
+
+
 
 
 module.exports = router;

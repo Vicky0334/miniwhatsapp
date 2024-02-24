@@ -1,5 +1,6 @@
 const io = require("socket.io")();
 const userModel = require('./routes/users')
+const messageModel = require('./routes/message')
 const socketapi = {
     io: io
 };
@@ -19,7 +20,14 @@ io.on("connection", function (socket) {
 
 
     socket.on('send-private-message', async messageObject => {
-        console.log(messageObject)
+
+        await messageModel.create({
+            receiver: messageObject.receiver,
+            data: messageObject.message,
+            sender: messageObject.sender
+        })
+
+
         const receiver = await userModel.findOne({
             username: messageObject.receiver
         })
@@ -34,3 +42,35 @@ io.on("connection", function (socket) {
 // end of socket.io logic
 
 module.exports = socketapi;
+
+
+
+
+/* a                                   shubham 
+    hello shubham
+                                        hello a
+
+*/
+
+
+/* a => shubham 
+Hello shubham
+
+
+sender:a
+receiver:shubham,
+message:hello shubham
+
+*/
+
+
+/* 
+shubham => a
+ hello a
+ 
+ sender:shubham,
+ receiver:a,
+ message:hello a
+
+
+*/

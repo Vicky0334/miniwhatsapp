@@ -294,9 +294,13 @@
     }
 
 
-    function openChat(profileImage, username, id) {
+    async function openChat(profileImage, username, id) {
 
       document.querySelector('.right').style.display = "initial"
+
+      const response = await axios.post('/getMessages', {
+        oppositeUser: username
+      })
 
       oppositeUser = username
 
@@ -326,7 +330,8 @@
 
       const messageObject = {
         message,
-        receiver: oppositeUser
+        receiver: oppositeUser,
+        sender: username
       }
 
       console.log(messageObject)
@@ -336,7 +341,14 @@
     }
 
     socket.on('receive-private-message', messageObject => {
+      /* 
+        messageObject = {
+            message:"hello shubham",
+            receiver:Shubham
+        }
+        */
       appendIncomingMessage(messageObject.message)
+
     })
   </script>
 </body>
