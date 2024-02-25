@@ -302,6 +302,16 @@
         oppositeUser: username
       })
 
+      document.querySelector('.conversationArea').innerHTML = ""
+
+      response.data.forEach(message => {
+        if (message.sender !== username) {
+          appendOutgoingMessage(message.data)
+        } else
+          appendIncomingMessage(message.data)
+      })
+
+
       oppositeUser = username
 
       document.querySelector('.right .top .user img').setAttribute('src', profileImage)

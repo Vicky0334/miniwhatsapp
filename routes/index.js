@@ -133,19 +133,19 @@ router.post('/getMessages', isloggedIn, async (req, res, next) => {
   const chats = await messageModel.find({
     $or: [
       {
-        sender: "a",
-        receiver: "shubham"
+        sender: req.user.username,
+        receiver: req.body.oppositeUser
       },
       {
-        sender: "shubham",
-        receiver: 'a'
+        sender: req.body.oppositeUser,
+        receiver: req.user.username
       }
     ]
   })
 
   console.log(chats)
 
-  res.send('chats fetched')
+  res.status(200).json(chats)
 
 
 })
